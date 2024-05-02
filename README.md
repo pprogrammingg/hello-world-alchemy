@@ -22,18 +22,5 @@ Learn how to create and interact with a smart contract using Alchemy:
    - Submit the smart contract to Etherscan for verification
 
 ### Storage, Memory, and Calldata
-
-Distinguish between different data locations in Solidity
-
-- **Storage**: Persistent storage on the Ethereum blockchain
-- **Memory**: Temporary storage during function execution
-- **Calldata**: Special data location containing function arguments from external calls
-
 ### Events in Solidity
-
-- How are events emitted and consumeed?
-- Learn what events are and how they are defined
-- Understand how events can be emitted and captured
-- Use events to log important contract interactions and state changes
-
 ### Mapping and Arrays in Solidity
