@@ -12,15 +12,12 @@ Learn how to create and interact with a smart contract using Alchemy:
 
 #### Topics
 - Alchemy Composer Tool for invoking some methods on blockchain explorer
-- Install Node.js/npm and Hardhat for smart contract development
-
+- Install Node.js/npm, Hardhat (has ethers.js) for smart contract development
 
 - Build and deploy a simple "Hello World" smart contract using Hardhat:
-
-   - Develop the contract
+   - Develop the contract in Solidity
    - dotenv, metamask setup, metamask private key and AlChemy API key
-   - EthersJS
-   - Deploy the contract on a local or test Ethereum network
+   - Deploy the contract on a local or test Ethereum network 
    - Interact with the deployed smart contract
    - Submit the smart contract to Etherscan for verification
 

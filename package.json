@@ -9,12 +9,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "ethers": "^5.7.2",
     "hardhat": "^2.22.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "ethers": "^5.7.2"
+    "dotenv": "^16.4.5"
   }
 }
