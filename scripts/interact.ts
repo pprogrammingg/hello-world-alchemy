@@ -17,8 +17,23 @@ if (!abi || !CONTRACT_ADDRESS) {
 const helloWorldContract = new Contract(CONTRACT_ADDRESS, abi, wallet);
 
 
-async function main() {
-    const message = await helloWorldContract.message();
-    console.log("The message is: " + message);
+async function main(): Promise<void> {
+
+    try {
+      const message = await helloWorldContract.message();
+      console.log("The message is: " + message);
+      
+      console.log("Updating the message...");
+      const tx = await helloWorldContract.update("This is the new message.");
+      await tx.wait();
+  
+      console.log("Message updated successfully!");
+
+      const newMessage = await helloWorldContract.message();
+      console.log("The new message is: " + newMessage); 
+    } catch (error) {
+      console.error("Error occurred:", error);
+    }
   }
-  main();
+
+main();

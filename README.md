@@ -10,15 +10,17 @@ Learn how to create and interact with a smart contract using Alchemy:
 ### Hello World Contract
 - [Hello World Smart Contract](https://docs.alchemy.com/docs/hello-world-smart-contract)
 
-#### Topics
+#### Topics and Code Base
 - Alchemy Composer Tool for invoking some methods on blockchain explorer
 - Install Node.js/npm, Hardhat (has ethers.js) for smart contract development
 
 - Build and deploy a simple "Hello World" smart contract using Hardhat:
    - Develop the contract in Solidity
    - dotenv, metamask setup, metamask private key and AlChemy API key
-   - Deploy the contract on a local or test Ethereum network 
-   - Interact with the deployed smart contract
+   - Extract ABI and Bytecode of the contract
+   - Deploy the contract on  OP Sepolia
+   - Read from the deployed smart contract
+   - Write to the deployed smart contract
    - Submit the smart contract to Etherscan for verification
 
 ### Storage, Memory, and Calldata
