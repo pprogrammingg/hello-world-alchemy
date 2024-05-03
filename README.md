@@ -18,10 +18,16 @@ Learn how to create and interact with a smart contract using Alchemy:
    - Develop the contract in Solidity
    - dotenv, metamask setup, metamask private key and AlChemy API key
    - Extract ABI and Bytecode of the contract
-   - Deploy the contract on  OP Sepolia
+   - Provider and Signer setup
+   - Deploy contract: Ethers ContractFactory
+   - Instantiate deployed contract: Ethers Contract object
    - Read from the deployed smart contract
    - Write to the deployed smart contract
    - Submit the smart contract to Etherscan for verification
+
+## EVM Smart Contracts Event Handling
+
+
 
 ### Storage, Memory, and Calldata
 ### Events in Solidity
