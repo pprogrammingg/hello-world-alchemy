@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@nomicfoundation/hardhat-verify": "^2.0.6",
+    "alchemy-sdk": "^3.3.0",
     "dotenv": "^16.4.5"
   }
 }

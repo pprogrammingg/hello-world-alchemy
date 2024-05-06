@@ -1,6 +1,6 @@
 import { BytesLike, ContractFactory, Wallet, providers } from 'ethers';
 import { getTheAbiAndByteCode } from './getArtifactProps';
-import "../dotEnvConfig"
+import "../dotEnvConfig";
 
 async function main() {
 
