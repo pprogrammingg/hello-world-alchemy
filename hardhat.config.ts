@@ -7,7 +7,7 @@ import "@nomicfoundation/hardhat-toolbox";
 //import "@nomicfoundation/hardhat-verify"
 import "./dotEnvConfig"
 
-const { API_URL, PRIVATE_KEY, OP_SEPOLIA_ETHERSCAN_API_KEY} = process.env;
+const { API_URL, PRIVATE_KEY, OP_SEPOLIA_BLOCKSCOUTS_API_KEY} = process.env;
 
 const config: HardhatUserConfig = {
   solidity: "0.7.3",
@@ -21,7 +21,7 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
       // Your API key for Etherscan
-      apiKey: OP_SEPOLIA_ETHERSCAN_API_KEY,
+      apiKey: OP_SEPOLIA_BLOCKSCOUTS_API_KEY,
       customChains:[
          {
             network: "optimismSepolia",

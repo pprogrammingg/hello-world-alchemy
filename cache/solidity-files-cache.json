@@ -35,6 +35,41 @@
       "artifacts": [
         "HelloWorld"
       ]
+    },
+    "/Users/pnaj/chainML/alchemy-tutorials/hello-world/contracts/Escrow_Dummy.sol": {
+      "lastModificationDate": 1715639825449,
+      "contentHash": "0f1feea26cb3ce7716b1c34b9e97fe9c",
+      "sourceName": "contracts/Escrow_Dummy.sol",
+      "solcConfig": {
+        "version": "0.7.3",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.7.3"
+      ],
+      "artifacts": [
+        "Escrow"
+      ]
     }
   }
 }

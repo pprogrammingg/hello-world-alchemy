@@ -24,7 +24,7 @@ async function main(): Promise<void> {
       console.log("The message is: " + message);
       
       console.log("Updating the message...");
-      const tx = await helloWorldContract.update("Updated message here!");
+      const tx = await helloWorldContract.update("Another Updated message here!");
       await tx.wait();
   
       console.log("Message updated successfully!");
