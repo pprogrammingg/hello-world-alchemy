@@ -63,10 +63,12 @@ contract Escrow {
      */
     function process_hold_record(string calldata requestId, string calldata effectiveCost) public {
          
+         // 5.
+         holdMapping[requestId]  = HoldRecord("", "",  address(0xEc8cfD6236B5C026778652c2BA0E7e6d0F0D3D0d), address(0xEc8cfD6236B5C026778652c2BA0E7e6d0F0D3D0d));
+
          // 4. 
          emit TransferPaymentEvent(requestId, address(0xEc8cfD6236B5C026778652c2BA0E7e6d0F0D3D0d), address(0x351Bf8A33125a0C324d54bb47C71D25E4f35C6E7), requestId, 300);
-         // 5.
-         holdMapping[requestId]  = NULL_HOLD_RECROD;
+      
          // 6.
          emit ProcessHoldRecordEvent(requestId, requestId, effectiveCost);
     }
@@ -78,7 +80,10 @@ contract Escrow {
      * 3. Emit ReleasedHoldRecord event
      */
     function release_hold_record(string calldata requestId) public {
-       // 3.
+        // 2.  
+        holdMapping[requestId]  = NULL_HOLD_RECROD;
+    
+        // 3.
         emit ReleaseHoldRecordEvent(requestId, requestId);
     }
 
