@@ -29,25 +29,49 @@ import type {
 
 export interface EscrowInterface extends utils.Interface {
   functions: {
-    "update_mapping_then_asset_failure(uint256)": FunctionFragment;
-    "update_mapping_then_revert(uint256,uint256)": FunctionFragment;
+    "add_hold_record(string,string,string,address,address)": FunctionFragment;
+    "holdMapping(string)": FunctionFragment;
+    "process_hold_record(string,string)": FunctionFragment;
+    "release_hold_record(string)": FunctionFragment;
+    "simpleHoldMapping(uint256)": FunctionFragment;
     "update_mappingthen_success(uint256,uint256)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "update_mapping_then_asset_failure"
-      | "update_mapping_then_revert"
+      | "add_hold_record"
+      | "holdMapping"
+      | "process_hold_record"
+      | "release_hold_record"
+      | "simpleHoldMapping"
       | "update_mappingthen_success"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "update_mapping_then_asset_failure",
-    values: [PromiseOrValue<BigNumberish>]
+    functionFragment: "add_hold_record",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
   ): string;
   encodeFunctionData(
-    functionFragment: "update_mapping_then_revert",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    functionFragment: "holdMapping",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "process_hold_record",
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "release_hold_record",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "simpleHoldMapping",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "update_mappingthen_success",
@@ -55,11 +79,23 @@ export interface EscrowInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "update_mapping_then_asset_failure",
+    functionFragment: "add_hold_record",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "update_mapping_then_revert",
+    functionFragment: "holdMapping",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "process_hold_record",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "release_hold_record",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "simpleHoldMapping",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -68,22 +104,87 @@ export interface EscrowInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "UpdatedEvent(uint256,uint256)": EventFragment;
+    "AddHoldRecordEvent(string,string,string,string,address,address)": EventFragment;
+    "ProcessHoldRecordEvent(string,string,string)": EventFragment;
+    "ReleaseHoldRecordEvent(string,string)": EventFragment;
+    "SimpleUpdatedEvent(uint256,uint256)": EventFragment;
+    "TransferPaymentEvent(string,address,address,string,uint256)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "UpdatedEvent"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AddHoldRecordEvent"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProcessHoldRecordEvent"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ReleaseHoldRecordEvent"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SimpleUpdatedEvent"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TransferPaymentEvent"): EventFragment;
 }
 
-export interface UpdatedEventEventObject {
+export interface AddHoldRecordEventEventObject {
+  indexedRequestId: string;
+  nonIndexRequestId: string;
+  budget: string;
+  currency: string;
+  payerAddress: string;
+  payeeAddress: string;
+}
+export type AddHoldRecordEventEvent = TypedEvent<
+  [string, string, string, string, string, string],
+  AddHoldRecordEventEventObject
+>;
+
+export type AddHoldRecordEventEventFilter =
+  TypedEventFilter<AddHoldRecordEventEvent>;
+
+export interface ProcessHoldRecordEventEventObject {
+  indexedRequestId: string;
+  nonIndexRequestId: string;
+  effective_cost: string;
+}
+export type ProcessHoldRecordEventEvent = TypedEvent<
+  [string, string, string],
+  ProcessHoldRecordEventEventObject
+>;
+
+export type ProcessHoldRecordEventEventFilter =
+  TypedEventFilter<ProcessHoldRecordEventEvent>;
+
+export interface ReleaseHoldRecordEventEventObject {
+  indexedRequestId: string;
+  nonIndexRequestId: string;
+}
+export type ReleaseHoldRecordEventEvent = TypedEvent<
+  [string, string],
+  ReleaseHoldRecordEventEventObject
+>;
+
+export type ReleaseHoldRecordEventEventFilter =
+  TypedEventFilter<ReleaseHoldRecordEventEvent>;
+
+export interface SimpleUpdatedEventEventObject {
   requestId: BigNumber;
   budget: BigNumber;
 }
-export type UpdatedEventEvent = TypedEvent<
+export type SimpleUpdatedEventEvent = TypedEvent<
   [BigNumber, BigNumber],
-  UpdatedEventEventObject
+  SimpleUpdatedEventEventObject
 >;
 
-export type UpdatedEventEventFilter = TypedEventFilter<UpdatedEventEvent>;
+export type SimpleUpdatedEventEventFilter =
+  TypedEventFilter<SimpleUpdatedEventEvent>;
+
+export interface TransferPaymentEventEventObject {
+  indexedRequestId: string;
+  payerAddress: string;
+  payeeAddress: string;
+  nonIndexRequestId: string;
+  transferAmount: BigNumber;
+}
+export type TransferPaymentEventEvent = TypedEvent<
+  [string, string, string, string, BigNumber],
+  TransferPaymentEventEventObject
+>;
+
+export type TransferPaymentEventEventFilter =
+  TypedEventFilter<TransferPaymentEventEvent>;
 
 export interface Escrow extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -112,16 +213,42 @@ export interface Escrow extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    update_mapping_then_asset_failure(
-      requestId: PromiseOrValue<BigNumberish>,
+    add_hold_record(
+      requestId: PromiseOrValue<string>,
+      budget: PromiseOrValue<string>,
+      currency: PromiseOrValue<string>,
+      payerAddress: PromiseOrValue<string>,
+      payeeAddress: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    update_mapping_then_revert(
-      requestId: PromiseOrValue<BigNumberish>,
-      budget: PromiseOrValue<BigNumberish>,
+    holdMapping(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, string, string, string] & {
+        budget: string;
+        currency: string;
+        payer: string;
+        payee: string;
+      }
+    >;
+
+    process_hold_record(
+      requestId: PromiseOrValue<string>,
+      effectiveCost: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    release_hold_record(
+      requestId: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    simpleHoldMapping(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     update_mappingthen_success(
       requestId: PromiseOrValue<BigNumberish>,
@@ -130,16 +257,42 @@ export interface Escrow extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  update_mapping_then_asset_failure(
-    requestId: PromiseOrValue<BigNumberish>,
+  add_hold_record(
+    requestId: PromiseOrValue<string>,
+    budget: PromiseOrValue<string>,
+    currency: PromiseOrValue<string>,
+    payerAddress: PromiseOrValue<string>,
+    payeeAddress: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  update_mapping_then_revert(
-    requestId: PromiseOrValue<BigNumberish>,
-    budget: PromiseOrValue<BigNumberish>,
+  holdMapping(
+    arg0: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, string, string, string] & {
+      budget: string;
+      currency: string;
+      payer: string;
+      payee: string;
+    }
+  >;
+
+  process_hold_record(
+    requestId: PromiseOrValue<string>,
+    effectiveCost: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  release_hold_record(
+    requestId: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  simpleHoldMapping(
+    arg0: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   update_mappingthen_success(
     requestId: PromiseOrValue<BigNumberish>,
@@ -148,16 +301,42 @@ export interface Escrow extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    update_mapping_then_asset_failure(
-      requestId: PromiseOrValue<BigNumberish>,
+    add_hold_record(
+      requestId: PromiseOrValue<string>,
+      budget: PromiseOrValue<string>,
+      currency: PromiseOrValue<string>,
+      payerAddress: PromiseOrValue<string>,
+      payeeAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    update_mapping_then_revert(
-      requestId: PromiseOrValue<BigNumberish>,
-      budget: PromiseOrValue<BigNumberish>,
+    holdMapping(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, string, string, string] & {
+        budget: string;
+        currency: string;
+        payer: string;
+        payee: string;
+      }
+    >;
+
+    process_hold_record(
+      requestId: PromiseOrValue<string>,
+      effectiveCost: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    release_hold_record(
+      requestId: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    simpleHoldMapping(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     update_mappingthen_success(
       requestId: PromiseOrValue<BigNumberish>,
@@ -167,23 +346,97 @@ export interface Escrow extends BaseContract {
   };
 
   filters: {
-    "UpdatedEvent(uint256,uint256)"(
+    "AddHoldRecordEvent(string,string,string,string,address,address)"(
+      indexedRequestId?: PromiseOrValue<string> | null,
+      nonIndexRequestId?: null,
+      budget?: null,
+      currency?: null,
+      payerAddress?: null,
+      payeeAddress?: null
+    ): AddHoldRecordEventEventFilter;
+    AddHoldRecordEvent(
+      indexedRequestId?: PromiseOrValue<string> | null,
+      nonIndexRequestId?: null,
+      budget?: null,
+      currency?: null,
+      payerAddress?: null,
+      payeeAddress?: null
+    ): AddHoldRecordEventEventFilter;
+
+    "ProcessHoldRecordEvent(string,string,string)"(
+      indexedRequestId?: PromiseOrValue<string> | null,
+      nonIndexRequestId?: null,
+      effective_cost?: null
+    ): ProcessHoldRecordEventEventFilter;
+    ProcessHoldRecordEvent(
+      indexedRequestId?: PromiseOrValue<string> | null,
+      nonIndexRequestId?: null,
+      effective_cost?: null
+    ): ProcessHoldRecordEventEventFilter;
+
+    "ReleaseHoldRecordEvent(string,string)"(
+      indexedRequestId?: PromiseOrValue<string> | null,
+      nonIndexRequestId?: null
+    ): ReleaseHoldRecordEventEventFilter;
+    ReleaseHoldRecordEvent(
+      indexedRequestId?: PromiseOrValue<string> | null,
+      nonIndexRequestId?: null
+    ): ReleaseHoldRecordEventEventFilter;
+
+    "SimpleUpdatedEvent(uint256,uint256)"(
       requestId?: null,
       budget?: null
-    ): UpdatedEventEventFilter;
-    UpdatedEvent(requestId?: null, budget?: null): UpdatedEventEventFilter;
+    ): SimpleUpdatedEventEventFilter;
+    SimpleUpdatedEvent(
+      requestId?: null,
+      budget?: null
+    ): SimpleUpdatedEventEventFilter;
+
+    "TransferPaymentEvent(string,address,address,string,uint256)"(
+      indexedRequestId?: PromiseOrValue<string> | null,
+      payerAddress?: PromiseOrValue<string> | null,
+      payeeAddress?: PromiseOrValue<string> | null,
+      nonIndexRequestId?: null,
+      transferAmount?: null
+    ): TransferPaymentEventEventFilter;
+    TransferPaymentEvent(
+      indexedRequestId?: PromiseOrValue<string> | null,
+      payerAddress?: PromiseOrValue<string> | null,
+      payeeAddress?: PromiseOrValue<string> | null,
+      nonIndexRequestId?: null,
+      transferAmount?: null
+    ): TransferPaymentEventEventFilter;
   };
 
   estimateGas: {
-    update_mapping_then_asset_failure(
-      requestId: PromiseOrValue<BigNumberish>,
+    add_hold_record(
+      requestId: PromiseOrValue<string>,
+      budget: PromiseOrValue<string>,
+      currency: PromiseOrValue<string>,
+      payerAddress: PromiseOrValue<string>,
+      payeeAddress: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    update_mapping_then_revert(
-      requestId: PromiseOrValue<BigNumberish>,
-      budget: PromiseOrValue<BigNumberish>,
+    holdMapping(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    process_hold_record(
+      requestId: PromiseOrValue<string>,
+      effectiveCost: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    release_hold_record(
+      requestId: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    simpleHoldMapping(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     update_mappingthen_success(
@@ -194,15 +447,34 @@ export interface Escrow extends BaseContract {
   };
 
   populateTransaction: {
-    update_mapping_then_asset_failure(
-      requestId: PromiseOrValue<BigNumberish>,
+    add_hold_record(
+      requestId: PromiseOrValue<string>,
+      budget: PromiseOrValue<string>,
+      currency: PromiseOrValue<string>,
+      payerAddress: PromiseOrValue<string>,
+      payeeAddress: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    update_mapping_then_revert(
-      requestId: PromiseOrValue<BigNumberish>,
-      budget: PromiseOrValue<BigNumberish>,
+    holdMapping(
+      arg0: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    process_hold_record(
+      requestId: PromiseOrValue<string>,
+      effectiveCost: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    release_hold_record(
+      requestId: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    simpleHoldMapping(
+      arg0: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     update_mappingthen_success(

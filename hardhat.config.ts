@@ -16,7 +16,9 @@ const config: HardhatUserConfig = {
      hardhat: {},
      optimismSepolia: {
         url: API_URL,
-        accounts: [`${PRIVATE_KEY}`]
+        accounts: [`${PRIVATE_KEY}`],
+        gas: 2100000,
+        gasPrice: 8000000000
      }
   },
   etherscan: {
@@ -29,7 +31,7 @@ const config: HardhatUserConfig = {
             urls: {
                apiURL: "https://optimism-sepolia.blockscout.com/api",
                browserURL: "https://optimism-sepolia.blockscout.com"
-            }
+            },
          }
       ]  
    },

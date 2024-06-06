@@ -15,11 +15,20 @@ Learn how to create and interact with a smart contract using Alchemy:
 - Install Node.js/npm, Hardhat (has ethers.js) for smart contract development
 
 - Build and deploy a simple "Hello World" smart contract using Hardhat:
-   - Develop the contract in Solidity
+   - Develop the contract in Solidity under `contracts` folder
+   - Compile the contract
+   ```  
+      npx hardhat compile 
+   ```
    - dotenv, metamask setup, metamask private key and AlChemy API key
    - Extract ABI and Bytecode of the contract
    - Provider and Signer setup
    - Deploy contract: Ethers ContractFactory
+   ```
+      npx hardhat run scripts/deploy.ts --network optimismSepolia
+   ```
+
+   Note: Make sure the correct path under `contracts` folder is being deployed
    - Instantiate deployed contract for uinteraction purposes using ABI and Signer
    - Read and write smart contract message
 

@@ -6,51 +6,84 @@ pragma solidity >=0.7.3;
 // Defines a contract named `Escrow`.
 contract Escrow {
 
-    // Event to log updates
-    event UpdatedEvent(uint256 requestId, uint256 budget);
+    // Event to log simple mapping updates
+    event SimpleUpdatedEvent(uint256 requestId, uint256 budget);
    
-    // Mapping to hold requestId to budget
-    mapping(uint256 => uint256) holdMapping;
+    // Simple hold mapping 
+    mapping(uint256 => uint256) public simpleHoldMapping;
+
+    // Events
+    event AddHoldRecordEvent(string indexed indexedRequestId, string nonIndexRequestId, string budget, string currency, address payerAddress, address payeeAddress);
+    event ProcessHoldRecordEvent(string indexed indexedRequestId, string nonIndexRequestId, string effective_cost);
+    event ReleaseHoldRecordEvent(string indexed indexedRequestId, string nonIndexRequestId);
+    event TransferPaymentEvent(string indexed indexedRequestId, address indexed payerAddress, address indexed payeeAddress, string nonIndexRequestId, uint256 transferAmount);
+
+    // More releastic hold mapping
+    mapping(string => HoldRecord) public holdMapping;
+    struct HoldRecord{
+        string budget;
+        string currency;
+        address payer;
+        address payee;
+    }
+
+   HoldRecord NULL_HOLD_RECROD = HoldRecord("", "", address(0), address(0));
 
     // Constructor (not needed in this example)
     constructor() {
         // Constructor can be left empty if no initialization is required upon contract deployment
     }
 
-    // Update mapping, emit UpdatedEvent, then revert
-    function update_mapping_then_revert(uint256 requestId, uint256 budget) public {
-        holdMapping[requestId] = budget;
-        emit UpdatedEvent(requestId, budget);
-        revert("Reverting for demonstration");
-    }
-
-    // Update mapping, emit UpdatedEvent, then assert a condition that always fails
-    function update_mapping_then_asset_failure(uint256 requestId) public {
-        uint256 budget = holdMapping[requestId];
-        emit UpdatedEvent(requestId, budget);
-        require(false, "Always fail to demonstrate assertion failure");
-    }
-
-     // Update mapping, emit UpdatedEvent,loop till 100M to give time to cancel
-    
-    // Update mapping, emit UpdatedEvent, then execute a long loop
-    function update_mapping_then_long_loop(uint256 requestId) public {
-        // Update the mapping with some value (e.g., requestId as key and requestId*2 as value)
-        holdMapping[requestId] = requestId * 2;
-        emit UpdatedEvent(requestId, requestId * 2);
-
-        // Simulate a long loop to delay execution
-        uint256 sum = 0;
-        for (uint256 i = 0; i < 100000000; i++) {
-            sum += i;
-        }
-        // Loop completes execution, but be cautious of gas limits and transaction costs
-    }
-
     // Update mapping, emit UpdatedEvent
     function update_mappingthen_success(uint256 requestId, uint256 budget) public {
-        holdMapping[requestId] = budget;
-        emit UpdatedEvent(requestId, budget);
+        simpleHoldMapping[requestId] = budget;
+        emit SimpleUpdatedEvent(requestId, budget);
         // No revert here, indicating successful execution
     }
+
+    /*
+     * Add hold record
+     * 1. Make sure requestId does NOT exist, if it does return error
+     * 2. Add a HoldRecord based on given parameters
+     * 3. Emit AddHoldRecordEvent
+     */
+    function add_hold_record(string calldata requestId, string calldata budget, string calldata currency, address payerAddress, address payeeAddress) public {
+        holdMapping[requestId] = HoldRecord(budget, currency, payerAddress, payeeAddress);
+        emit AddHoldRecordEvent(requestId, requestId, budget, currency, payerAddress, payeeAddress);
+    }
+
+    /*
+     * Process payments based on hold record
+     * 1. Get hold record based on requestId, if not exist return error. 
+     * 2. Make sure effective cost is less or equal to the budget 
+     * 3. Transfer the effective amount
+     * 4. Emit TransferPaymentEvent
+     * 5. Nullify the hold record at requestId
+     * 6. Emit ProcessHoldRecordEvent
+     */
+    function process_hold_record(string calldata requestId, string calldata effectiveCost) public {
+         
+         // 4. 
+         emit TransferPaymentEvent(requestId, address(0xEc8cfD6236B5C026778652c2BA0E7e6d0F0D3D0d), address(0x351Bf8A33125a0C324d54bb47C71D25E4f35C6E7), requestId, 300);
+         // 5.
+         holdMapping[requestId]  = NULL_HOLD_RECROD;
+         // 6.
+         emit ProcessHoldRecordEvent(requestId, requestId, effectiveCost);
+    }
+
+    /*
+     * Process payments based on hold record
+     * 1. Check requestId exist, if DOES return error
+     * 2. Nullify the hold record at requestId
+     * 3. Emit ReleasedHoldRecord event
+     */
+    function release_hold_record(string calldata requestId) public {
+       // 3.
+        emit ReleaseHoldRecordEvent(requestId, requestId);
+    }
+
+
+
+
+
 }
