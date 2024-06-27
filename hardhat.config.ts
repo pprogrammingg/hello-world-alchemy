@@ -19,7 +19,11 @@ const config: HardhatUserConfig = {
         accounts: [`${PRIVATE_KEY}`],
         gas: 2100000,
         gasPrice: 8000000000
-     }
+     },
+     zkSyncEraSepolia: {
+      url: `https://zksync-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY || ""}`,
+      accounts: [`${PRIVATE_KEY}`],
+     } 
   },
   etherscan: {
       // Your API key for Etherscan
@@ -32,7 +36,15 @@ const config: HardhatUserConfig = {
                apiURL: "https://optimism-sepolia.blockscout.com/api",
                browserURL: "https://optimism-sepolia.blockscout.com"
             },
-         }
+         },
+         {
+            network: "zkSyncEraSepolia",
+            chainId: 300,
+            urls: {
+              apiURL: "https://zksync-sepolia.blockscout.com/api",
+              browserURL: "https://zksync-sepolia.blockscout.com"
+            },
+          }
       ]  
    },
 }
